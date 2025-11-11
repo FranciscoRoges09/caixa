@@ -194,41 +194,41 @@ src="https://www.facebook.com/tr?id=1979917502794486&ev=PageView&noscript=1"
   if (cpf) {
     userNameDisplay.textContent = 'Carregando...';
 
-    // *** REQUISIÇÃO PARA O NOVO PROXY VERCEL (api/consulta) ***
-    // Usa um caminho relativo para chamar o arquivo que criamos no Passo 2
+    // *** REQUISIÇÃO PARA O PROXY LOCAL NO VERCEL ***
     const proxyUrl = `/api/consulta?cpf=${cpf}`; 
 
     fetch(proxyUrl)
     .then(response => {
         if (!response.ok) {
-            // Trata erros HTTP do proxy (400, 500)
+            // Se o proxy retornar erro (400, 500), tenta ler a mensagem de erro
             return response.json().then(errorData => {
-                throw new Error(errorData.erro || `Erro de rede: ${response.status}`);
+                throw new Error(errorData.erro || `Erro do Proxy: ${response.status}`);
             });
         }
         return response.json();
     })
     .then(result => {
-        console.log("Resultado do Proxy:", result); 
+        console.log("JSON Retornado pelo Proxy:", result); 
 
-        // Extrai o 'nome' diretamente, conforme a documentação da sua API
+        // Tenta extrair o 'nome' do JSON
         if (result && result.nome) {
+          // Extração de sucesso
           userNameDisplay.textContent = String(result.nome).toUpperCase();
         } else if (result && result.erro) {
-          // Se a API externa retornou um erro (token inválido, limite, etc.)
+          // Trata o erro retornado pela API externa (ex: "Token inválido" ou "Limite atingido")
           userNameDisplay.textContent = `Falha na API: ${result.erro}`;
         } else {
-          userNameDisplay.textContent = 'Nome não encontrado.';
+          // Trata sucesso (200) sem o campo 'nome'
+          userNameDisplay.textContent = 'Nome não encontrado no CPF.';
         }
     })
     .catch(error => {
-      // Captura falhas de rede e erros gerais
-      console.error('Falha na busca:', error.message);
+      // Captura falhas de rede e erros críticos
+      console.error('Falha na busca (Catch):', error.message);
       userNameDisplay.textContent = 'Erro ao buscar dados. Tente alterar seus dados.';
     });
   }
 </script>
-
 
     
 
