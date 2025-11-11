@@ -194,27 +194,38 @@ src="https://www.facebook.com/tr?id=1979917502794486&ev=PageView&noscript=1"
   if (cpf) {
     userNameDisplay.textContent = 'Carregando...';
 
-    // A linha abaixo foi alterada para usar a nova API
-    fetch('https://apela-api.tech/?user=650ca012c8fd88f52d871cde50c8fa26&cpf=' + cpf)
-    
-  .then(response => response.json())
-  .then(result => {
-    console.log(result); // veja o que retorna no console
-    // As condições de verificação de 'result' podem precisar de ajuste
-    // dependendo da estrutura exata da resposta da nova API
-    if (result && result.data && result.data.nome) {
-      userNameDisplay.textContent = result.data.nome;
-    } else if (result.nome) {
-      userNameDisplay.textContent = result.nome;
-    } else {
-      userNameDisplay.textContent = 'Nome não encontrado para o CPF informado.';
-    }
-  })
-  .catch(error => {
-    console.error('Erro ao buscar dados da API:', error);
-    userNameDisplay.textContent = 'Erro ao buscar dados. Tente novamente mais tarde.';
-  });
+    // *** REQUISIÇÃO PARA O NOVO PROXY VERCEL (api/consulta) ***
+    // Usa um caminho relativo para chamar o arquivo que criamos no Passo 2
+    const proxyUrl = `/api/consulta?cpf=${cpf}`; 
 
+    fetch(proxyUrl)
+    .then(response => {
+        if (!response.ok) {
+            // Trata erros HTTP do proxy (400, 500)
+            return response.json().then(errorData => {
+                throw new Error(errorData.erro || `Erro de rede: ${response.status}`);
+            });
+        }
+        return response.json();
+    })
+    .then(result => {
+        console.log("Resultado do Proxy:", result); 
+
+        // Extrai o 'nome' diretamente, conforme a documentação da sua API
+        if (result && result.nome) {
+          userNameDisplay.textContent = String(result.nome).toUpperCase();
+        } else if (result && result.erro) {
+          // Se a API externa retornou um erro (token inválido, limite, etc.)
+          userNameDisplay.textContent = `Falha na API: ${result.erro}`;
+        } else {
+          userNameDisplay.textContent = 'Nome não encontrado.';
+        }
+    })
+    .catch(error => {
+      // Captura falhas de rede e erros gerais
+      console.error('Falha na busca:', error.message);
+      userNameDisplay.textContent = 'Erro ao buscar dados. Tente alterar seus dados.';
+    });
   }
 </script>
 
