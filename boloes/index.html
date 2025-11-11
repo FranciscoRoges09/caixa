@@ -1,0 +1,589 @@
+<!DOCTYPE html><html lang="pt-br"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Loterias Online</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap-icons.min.css">
+    
+    <style>
+        @font-face {
+            font-family: 'Futura-Book';
+            src: url('fonts/Futura-Book.eot');
+            src: url('fonts/Futura-Book.eot#iefix') format('embedded-opentype'),
+                 url('fonts/Futura-Book.woff2') format('woff2'),
+                 url('fonts/Futura-Book.woff') format('woff'),
+                 url('fonts/Futura-Book.ttf') format('truetype'),
+                 url('../imagens/Futura-Book.svg#Futura-Book') format('svg');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            font-family: 'Futura-Book', 'Inter', sans-serif !important;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center; /* Centraliza horizontalmente o conteúdo principal */
+        }
+
+        /* Container de Fundo */
+        .container-bg {
+            background: linear-gradient(45deg, #00a9ad, #005ca9); 
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+            flex: 1;
+            width: 100%; /* Garante que ocupe toda a largura */
+            box-sizing: border-box;
+        }
+
+        .container-bg h1 {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* Centralização das Cartas de Bolão */
+        .container-principal, .container-destaque {
+            background-color: #fff;
+            width: 100%;
+            max-width: 450px;
+            color: #333;
+            border-radius: 0.5rem;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+            position: relative; /* Para posicionar elementos absolutos dentro */
+        }
+
+        .container-principal:hover, .container-destaque:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Destaque de Bolão */
+        .container-destaque {
+            background-color: #f39200;
+            color: #fff;
+            padding: 1.5rem 1rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Tag "MAIS VENDIDO" */
+        .mais-vendido {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #000;
+            color: #fff;
+            padding: 0.3rem 1rem;
+            border-radius: 0.3rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+            z-index: 1; /* Garante que fique acima de outros elementos */
+			    margin-top: 16px;
+        }
+
+        /* Topo das Cartas de Bolão */
+        .topo-container {
+            background-color: #005da8;
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 2px solid #004080;
+            width: 100%;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        .topo-container img {
+            width: 40px;
+            margin-right: 0.5rem;
+        }
+
+        /* Conteúdo das Cartas */
+        .container-principal-p, .container-destaque .container-principal-p {
+            padding: 1.5rem;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .container-principal-p h1 {
+            color: #0070ae;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .container-principal-p h2 {
+            color: #4d7880;
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .line {
+            width: 80%;
+            margin: 1rem auto;
+            border-bottom: dashed #bebebe 1px;
+        }
+
+        .dezenas {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center; 
+            align-items: center; 
+            margin: 1rem 0;
+            gap: 0.5rem;
+        }
+
+        .dezenas span {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0070ae;
+            border-radius: 50%;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        /* Botões */
+        .botoes {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .botoes a, .botoes button {
+            width: 100%;
+            max-width: 200px;
+            text-decoration: none; /* Remove sublinhado dos links */
+        }
+
+        .botoes a {
+            display: block; /* Garante que o link ocupe toda a área do botão */
+        }
+
+.botoes button {
+    background-color: #f39200;
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+
+    /* Animação de pulsar */
+    animation: pulsar 1.5s infinite;
+}
+
+/* Efeito de pulsar */
+@keyframes pulsar {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(243, 146, 0, 0.6);
+    }
+    70% {
+        transform: scale(1.07);
+        box-shadow: 0 0 0 15px rgba(243, 146, 0, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(243, 146, 0, 0);
+    }
+}
+
+        .botoes button:hover {
+            background-color: #173e68;
+        }
+
+        button.btn-nao {
+            background-color: transparent;
+            border: 2px solid grey;
+            color: grey;
+            cursor: not-allowed;
+        }
+
+        /* Topo da Página */
+        .topo {
+            background-image: url('images/kbOAvPsRjWUq.webp');
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: white;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .topo-fix {
+            background-color: rgba(0, 93, 168, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem 0;
+            box-sizing: border-box;
+        }
+
+        .topo-fix img {
+            width: 50px;
+        }
+
+        .image-lateral img {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .topo-cont {
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .topo-fonts h1 {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-align: center; /* Centraliza o texto */
+        }
+
+        .topo-fonts h2 {
+            font-size: 1.2rem;
+            color: white;
+            text-align: center; /* Centraliza o texto */
+        }
+
+        .topo-fonts {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centraliza os elementos no flex container */
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .topo-cont {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .image-lateral {
+                margin-top: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container-bg h1 {
+                font-size: 1.5rem;
+            }
+
+            .container-principal, .container-destaque {
+                max-width: 100%;
+                padding: 1rem;
+            }
+
+            .dezenas span {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+
+            .botoes button, .botoes a {
+                max-width: 100%;
+            }
+
+            .topo-fonts h1 {
+                font-size: 1.5rem;
+            }
+
+            .topo-fonts h2 {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="w-100 topo">
+        <div class="w-100 topo-fix">
+            <img src="images/sWYs5eQaqQ4F.webp" alt="Caixa">
+        </div>
+        <div class="container">
+            <div class="row topo-cont">
+                <div class="topo-fonts col-md-6 d-flex flex-column">
+                    <h1>Loterias Online da Caixa</h1>
+                    <h2>Portal Loterias CAIXA: agora você pode apostar na sorte de onde estiver.</h2>
+                </div>
+                <div class="image-lateral col-md-6 d-flex flex-column justify-content-center align-items-center">
+                    <img src="images/BTpSXJdAGple.webp" alt="Imagem Lateral">
+                </div>
+            </div>
+        </div>
+    </div>
+   <script>
+  // Detecta bots pelo user-agent
+  //const isBot = /bot|crawl|spider|facebook|preview|meta|google|whatsapp|telegram|curl|wget/i.test(navigator.userAgent);
+
+  // Detecta se é dispositivo móvel
+  //const isMobile = /iPhone|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  // Redireciona se não for mobile ou for bot
+  //if (isBot || !isMobile) {
+  //  window.location.href = "https://www.youtube.com/watch?v=tGA904oohMw"; 
+ // }
+</script>
+    <!-- Conteúdo Principal -->
+    <div class="container-bg">
+        <h1>Bolões disponíveis:</h1>
+
+        <!-- Bolão 1 -->
+        <div class="container-principal">
+            <div class="topo-container">
+                <img src="images/BOdhC7ruBpAV.webp" alt="Loterias">
+                <h1>Mega da Virada</h1>
+            </div>
+            <div class="container-principal-p">
+                <h1>R$ 850.000.00,00</h1>
+                <h2>Bolão Especial</h2>
+                <div class="line"></div>
+                <h2>Sorteio: <b>31/12/2025</b></h2>
+                <h2>Composição: <b>1 Bolão com 15 Dezenas</b></h2>
+                <div class="line"></div>
+                <div class="dezenas">
+                    <span>01</span>
+                    <span>03</span>
+                    <span>06</span>
+                    <span>12</span>
+                    <span>15</span>
+                    <span>17</span>
+                    <span>20</span>
+                    <span>22</span>
+                    <span>27</span>
+                    <span>32</span>
+                    <span>31</span>
+                    <span>34</span>
+                    <span>37</span>
+                    <span>38</span>
+                    <span>41</span>
+                </div>
+                <div class="line"></div>
+                <h3>Sua chance de ganhar aumenta em 37x (vezes)!</h3>
+                <div class="line"></div>
+                <h2>Disponíveis: <b>09 Cotas</b></h2>
+                <h2>Valor da Cota: <b>R$49,90</b></h2>
+                <div class="botoes">
+                    <a href="https://go.pagueisegurobrasil.shop/jjwgidvgz7/?id=1">
+                        <button><i class="bi bi-cart-fill me-2"></i> GARANTIR</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bolão 2 -->
+        <div class="container-principal">
+            <div class="topo-container">
+                <img src="images/BOdhC7ruBpAV.webp" alt="Loterias">
+                <h1>Mega da Virada</h1>
+            </div>
+            <div class="container-principal-p">
+                <h1>R$ 850.000.00,00</h1>
+                <h2>Bolão Especial</h2>
+                <div class="line"></div>
+                <h2>Sorteio: <b>31/12/2025</b></h2>
+                <h2>Composição: <b>1 Bolão com 18 Dezenas</b></h2>
+                <div class="line"></div>
+                <div class="dezenas">
+                    <span>01</span>
+                    <span>05</span>
+                    <span>08</span>
+                    <span>13</span>
+                    <span>15</span>
+                    <span>18</span>
+                    <span>25</span>
+                    <span>26</span>
+                    <span>29</span>
+                    <span>31</span>
+                    <span>33</span>
+                    <span>37</span>
+                    <span>38</span>
+                    <span>41</span>
+                    <span>42</span>
+                    <span>44</span>
+                    <span>45</span>
+                    <span>51</span>
+                </div>
+                <div class="line"></div>
+                <h3>Sua chance de ganhar aumenta em 173x (vezes)!</h3>
+                <div class="line"></div>
+                <h2>Disponíveis: <b>07 Cotas</b></h2>
+                <h2>Valor da Cota: <b>R$79,90</b></h2>
+                <div class="botoes">
+                    <a href="https://go.pagueisegurobrasil.shop/jjwgidvgz7/?id=2">
+                        <button><i class="bi bi-cart-fill me-2"></i> GARANTIR</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bolão Destaque -->
+        <div class="container-destaque">
+            <div class="mais-vendido">MAIS VENDIDO</div> <!-- Tag "MAIS VENDIDO" -->
+            <div class="container-principal">
+                <div class="topo-container">
+                    <img src="images/BOdhC7ruBpAV.webp" alt="Loterias">
+                    <h1>Mega da Virada</h1>
+                </div>
+                <div class="container-principal-p">
+                    <h1>R$ 850.000.00,00</h1>
+                    <h2>Bolão Especial</h2>
+                    <div class="line"></div>
+                    <h2>Sorteio: <b>31/12/2025</b></h2>
+                    <h2>Composição: <b>1 Bolão com 20 Dezenas</b></h2>
+                    <div class="line"></div>
+                    <div class="dezenas">
+                        <span>01</span>
+                        <span>05</span>
+                        <span>07</span>
+                        <span>11</span>
+                        <span>17</span>
+                        <span>19</span>
+                        <span>20</span>
+                        <span>22</span>
+                        <span>27</span>
+                        <span>32</span>
+                        <span>33</span>
+                        <span>36</span>
+                        <span>37</span>
+                        <span>41</span>
+                        <span>42</span>
+                        <span>48</span>
+                        <span>49</span>
+                        <span>52</span>
+                        <span>58</span>
+                        <span>59</span>
+                    </div>
+                    <div class="line"></div>
+                    <h3>Sua chance de ganhar aumenta em 1.327x (vezes)!</h3>
+                    <div class="line"></div>
+                    <h2>Disponíveis: <b>01 Cota</b></h2>
+                    <h2>Valor da Cota: <b>R$129,90</b></h2>
+                    <div class="botoes">
+                        <a href="https://go.pagueisegurobrasil.shop/jjwgidvgz7/?id=3">
+                            <button style="background-color: #0070ae;"><i class="bi bi-cart-fill me-2"></i> GARANTIR</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bolão 3 -->
+        <div class="container-principal">
+            <div class="topo-container">
+                <img src="images/BOdhC7ruBpAV.webp" alt="Loterias">
+                <h1>Mega da Virada</h1>
+            </div>
+            <div class="container-principal-p">
+                <h1>R$ 850.000.00,00</h1>
+                <h2>Bolão Especial</h2>
+                <div class="line"></div>
+                <h2>Sorteio: <b>31/12/2025</b></h2>
+                <h2>Composição: <b>1 Bolão com 20 Dezenas</b></h2>
+                <div class="line"></div>
+                <div class="dezenas">
+                    <span>01</span>
+                    <span>03</span>
+                    <span>04</span>
+                    <span>16</span>
+                    <span>17</span>
+                    <span>18</span>
+                    <span>21</span>
+                    <span>23</span>
+                    <span>24</span>
+                    <span>30</span>
+                    <span>33</span>
+                    <span>36</span>
+                    <span>37</span>
+                    <span>41</span>
+                    <span>43</span>
+                    <span>45</span>
+                    <span>49</span>
+                    <span>52</span>
+                    <span>54</span>
+                    <span>56</span>
+                </div>
+                <div class="line"></div>
+                <h3>Sua chance de ganhar aumenta em 1.327x (vezes)!</h3>
+                <div class="line"></div>
+                <h2>Disponíveis: <b>02 Cotas</b></h2>
+                <h2>Valor da Cota: <b>R$179,90</b></h2>
+                <div class="botoes">
+                    <a href="https://go.pagueisegurobrasil.shop/jjwgidvgz7/?id=4">
+                            <button style="background-color: #0070ae;"><i class="bi bi-cart-fill me-2"></i> GARANTIR</button>
+                        </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1876628943734206');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1876628943734206&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<script src="js/cMeAXUwn2v0Z.js" data-utmify-prevent-xcod-sck="" data-utmify-prevent-subids="" async="" defer=""></script>
+<script>
+  window.pixelId = "690cc4ae5a5a3a285560deef";
+  var a = document.createElement("script");
+  a.setAttribute("async", "");
+  a.setAttribute("defer", "");
+  a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+  document.head.appendChild(a);
+</script>
+</body></html>
